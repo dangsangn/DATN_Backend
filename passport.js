@@ -41,17 +41,17 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (user, done) => {
-  console.log("1", user);
   const usernameExised = await User.findOne({
-    username: user.displayName,
+    username: user.emails[0].value,
   });
   if (!usernameExised) {
     const passwordCode = CryptoJS.AES.encrypt(user.id, process.env.PASS_SECRET).toString();
     const newUser = new User({
-      username: user.displayName,
+      username: user.emails[0].value,
+      fullName: user.displayName,
       password: passwordCode,
       photo: user.photos.value,
-      email: "" + Math.random() + Math.random(),
+      email: user.emails[0].value,
     });
     await newUser.save();
   }

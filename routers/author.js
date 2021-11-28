@@ -4,7 +4,7 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
-const CLIENT_URL = "http://localhost:3000/";
+const CLIENT_URL = "http://localhost:3000";
 //register user
 router.post("/register", async (req, res) => {
   const { username, password, passwordConfirm } = req.body;
@@ -63,7 +63,6 @@ router.post("/login", async (req, res) => {
 
 //login by google and facebook
 router.get("/login/success", (req, res) => {
-  console.log("2", req.user);
   if (req.user) {
     res.status(200).json({
       success: true,
@@ -86,7 +85,7 @@ router.get("/logout", (req, res) => {
   res.redirect(CLIENT_URL);
 });
 
-router.get("/google", passport.authenticate("google", { scope: ["profile"] }));
+router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 router.get(
   "/google/callback",

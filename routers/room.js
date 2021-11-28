@@ -1,47 +1,53 @@
 const router = require("express").Router();
 const CryptoJS = require("Crypto-js");
-const { verifyTokenAndAuthorization } = require("../middleware/auth");
+const { verifyToken, verifyTokenAndAuthorization } = require("../middleware/auth");
 const User = require("../models/User");
+const Room = require("../models/Room");
 
-//get a user
-router.get("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
+//create a room
+router.post("/", verifyToken, async (req, res) => {
   try {
-    const user = await User.findOne({ _id: req.params.idUser });
-    if (!user) {
-      return res.status(401).json("not found user");
-    }
-    res.status(202).json(user);
+    const room = new Room({ ...req.body, idUser: req.idUser });
+    await room.save();
+    res.status(202).json(room);
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
-//update user
-router.patch("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
+//get a room
+router.get("/:idRoom", async (req, res) => {
   try {
-    if (req.body.password) {
-      req.body.password = CryptoJS.AES.encrypt(
-        req.body.password,
-        process.env.PASS_SECRET
-      ).toString();
+    const room = await Room.findOne({ _id: req.params.idRoom });
+    if (!room) {
+      return res.status(401).json("not found room");
     }
-    const newUser = await User.findByIdAndUpdate(
-      { _id: req.params.idUser },
+    res.status(202).json(room);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+//update room
+router.patch("/:idRoom", verifyToken, async (req, res) => {
+  try {
+    const newRoom = await Room.findByIdAndUpdate(
+      { _id: req.params.idRoom },
       { $set: req.body },
       { new: true }
     );
-    res.status(202).json(newUser);
+    res.status(202).json(newRoom);
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
-//delete a user
-router.delete("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
+//delete a room
+router.delete("/:idRoom", verifyToken, async (req, res) => {
   try {
-    const user = await User.findOneAndDelete({ _id: req.params.idUser });
-    if (!user) {
-      return res.status(401).json("not found user");
+    const room = await Room.findOneAndDelete({ _id: req.params.idRoom });
+    if (!room) {
+      return res.status(401).json("not found room");
     }
     res.status(202).json("delete success");
   } catch (error) {
@@ -49,26 +55,26 @@ router.delete("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
   }
 });
 
-//get all user or pagination
-router.get("/", verifyTokenAndAuthorization, async (req, res) => {
+//get all room or pagination
+router.get("/", async (req, res) => {
   let { _limit, _page } = req.query;
   const queryNew = req.query.new;
   _page = _page < 1 ? 1 : _page;
   _limit = _limit ? _limit : 10;
-  const totalRow = await User.count();
+  const totalRow = await Room.count();
   if (_page) {
     try {
-      let users = queryNew
-        ? await User.find()
+      let rooms = queryNew
+        ? await Room.find()
             .sort({ _id: -1 })
             .skip((_page - 1) * _limit)
             .limit(+_limit)
-        : await User.find()
+        : await Room.find()
             .skip((_page - 1) * _limit)
             .limit(+_limit);
 
       res.status(202).json({
-        users,
+        rooms,
         pagination: { _limit: +_limit, _page: +_page, totalRow },
       });
     } catch (error) {
@@ -76,9 +82,9 @@ router.get("/", verifyTokenAndAuthorization, async (req, res) => {
     }
   } else {
     try {
-      const users = User.find();
+      const rooms = Room.find();
       res.status(202).json({
-        users,
+        rooms,
       });
     } catch (error) {
       res.status(500).json(error);

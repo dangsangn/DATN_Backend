@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema(
     isAdmin: { type: Boolean, default: false },
     photo: { type: String },
     email: { type: String },
+    fullName: { type: String },
   },
   { timestamps: true }
 );

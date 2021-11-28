@@ -9,12 +9,17 @@ const fs = require("fs");
 const passportSetup = require("./passport");
 const authRouter = require("./routers/author");
 const userRouter = require("./routers/user");
+const roomRouter = require("./routers/room");
 const upload = require("./multer");
 const cloudinary = require("./cloudinary");
 
 const app = express();
 dotenv.config();
-app.use(cors());
+const corsConfig = {
+  credentials: true,
+  origin: true,
+};
+app.use(cors(corsConfig));
 app.use(express.json());
 
 //login width google and facabook
@@ -40,6 +45,7 @@ mongoose
 //use router
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
+app.use("/api/room", roomRouter);
 
 app.use("/api/upload-images", upload.array("image"), async (req, res) => {
   const uploader = async (path) => await cloudinary.uploads(path, "Images");
