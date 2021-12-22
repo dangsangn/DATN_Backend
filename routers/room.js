@@ -57,7 +57,8 @@ router.delete("/:idRoom", verifyToken, async (req, res) => {
 
 //get all room or pagination
 router.get("/", async (req, res) => {
-  let { _limit, _page } = req.query;
+  // console.log(req.query);
+  let { _limit, _page, verify } = req.query;
   const queryNew = req.query.new;
   _page = _page < 1 ? 1 : _page;
   _limit = _limit ? _limit : 10;
@@ -65,13 +66,45 @@ router.get("/", async (req, res) => {
   if (_page) {
     try {
       let rooms = queryNew
-        ? await Room.find()
+        ? await Room.find(req.query)
             .sort({ _id: -1 })
             .skip((_page - 1) * _limit)
             .limit(+_limit)
         : await Room.find()
             .skip((_page - 1) * _limit)
             .limit(+_limit);
+
+      res.status(202).json({
+        rooms,
+        pagination: { _limit: +_limit, _page: +_page, totalRow },
+      });
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  } else {
+    try {
+      const rooms = Room.find();
+      res.status(202).json({
+        rooms,
+      });
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+});
+
+//get all room verify
+router.get("/verify", async (req, res) => {
+  let { _limit, _page } = req.query;
+  const queryNew = req.query.new;
+  _page = _page < 1 ? 1 : _page;
+  _limit = _limit ? _limit : 10;
+  const totalRow = await Room.count();
+  if (_page) {
+    try {
+      let rooms = await Room.find({ verify: true })
+        .skip((_page - 1) * _limit)
+        .limit(+_limit);
 
       res.status(202).json({
         rooms,

@@ -10,6 +10,7 @@ const passportSetup = require("./passport");
 const authRouter = require("./routers/author");
 const userRouter = require("./routers/user");
 const roomRouter = require("./routers/room");
+const provinceRouter = require("./routers/province");
 const upload = require("./multer");
 const cloudinary = require("./cloudinary");
 
@@ -46,6 +47,7 @@ mongoose
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/room", roomRouter);
+app.use("/api/provinces", provinceRouter);
 
 app.use("/api/upload-images", upload.array("image"), async (req, res) => {
   const uploader = async (path) => await cloudinary.uploads(path, "Images");
