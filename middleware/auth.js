@@ -6,7 +6,7 @@ const verifyToken = (req, res, next) => {
     return res.status(400).json("token is empty");
   } else {
     try {
-      const decode = jwt.verify(token, process.env.ACCESS__TOKEN);
+      const decode = jwt.verify(token, process.env.ACCESS_TOKEN);
       const { isAdmin, idUser } = decode;
       req.idUser = idUser;
       req.isAdmin = isAdmin;

@@ -50,7 +50,7 @@ router.post("/login", async (req, res) => {
       idUser: usernameExised._id,
       isAdmin: usernameExised.isAdmin,
     },
-    process.env.ACCESS__TOKEN,
+    process.env.ACCESS_TOKEN,
     { expiresIn: "3d" }
   );
   const { password, ...user } = usernameExised._doc;
