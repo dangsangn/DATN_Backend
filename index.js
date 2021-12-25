@@ -71,18 +71,18 @@ app.use("/api/upload-images", upload.array("image"), async (req, res) => {
 });
 
 const PORT = process.env.PORT || 8080;
-app.set("port", PORT);
-server.listen(PORT);
-// server.on("error", onError);
-server.on("listening", onListening);
-function onListening() {
-  var addr = server.address();
-  var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  debug("Listening on " + bind);
-}
-// app.listen(PORT, "0.0.0.0", function () {
-//   console.log("Server running at http://127.0.1.1:8080/");
-// });
+// app.set("port", PORT);
+// server.listen(PORT);
+// // server.on("error", onError);
+// server.on("listening", onListening);
+// function onListening() {
+//   var addr = server.address();
+//   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+//   debug("Listening on " + bind);
+// }
+app.listen(PORT,function () {
+  console.log("Server running at ", PORT);
+});
 
 // server.listen(8080, "127.0.0.1", function () {
 //   server.close(function () {
