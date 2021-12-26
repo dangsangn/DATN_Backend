@@ -18,6 +18,7 @@ const upload = require("./multer");
 const cloudinary = require("./cloudinary");
 
 dotenv.config();
+app.use("/uploads", express.static("uploads"));
 const corsConfig = {
   origin: "http://localhost:3000",
   methods: "GET,POST,PUT,DELETE",

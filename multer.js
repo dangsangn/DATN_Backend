@@ -1,11 +1,16 @@
 const multer = require("multer");
-const path = require("path");
+const fs = require("fs");
+
+// Creating uploads folder if not already present
+// In "uploads" folder we will temporarily upload
+// image before uploading to cloudinary
+if (!fs.existsSync("./uploads")) {
+  fs.mkdirSync("./uploads");
+}
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // cb(null, "./uploads/");
-    console.log("__dirname", __dirname);
-    cb(null, path.join(__dirname, "/uploads/"));
+    cb(null, "./uploads");
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + "-" + file.originalname);
