@@ -7,9 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "license": "MIT",
+  "license": "ISC",
   "engines": {
-      "node": "14.x"
+    "node": "14.x"
   },
   "author": "",
   "dependencies": {
@@ -31,5 +31,8 @@
     "passport-google-oauth20": "^2.0.0",
     "stripe": "^8.181.0",
     "sub-vn": "^0.0.2"
+  },
+  "optionalDependencies": {
+    "fsevents": "2.1.2"
   }
 }
