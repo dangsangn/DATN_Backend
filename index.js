@@ -19,8 +19,10 @@ const cloudinary = require("./cloudinary");
 
 dotenv.config();
 const corsConfig = {
+  origin: "http://localhost:3000",
+  methods: "GET,POST,PUT,DELETE",
   credentials: true,
-  origin: true,
+  // origin: true,
 };
 app.use(cors(corsConfig));
 app.use(express.json());
@@ -30,14 +32,6 @@ app.use(cookieSession({ name: "session", keys: ["dangsang"], maxAge: 24 * 60 * 6
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(
-  cors({
-    origin: "http://localhost:3000",
-    methods: "GET,POST,PUT,DELETE",
-    credentials: true,
-  })
-);
 
 //connect db
 mongoose
