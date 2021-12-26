@@ -2,7 +2,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const FacebookStrategy = require("passport-facebook").Strategy;
 const passport = require("passport");
 const User = require("./models/User");
-const CryptoJS = require("Crypto-js");
+const CryptoJS = require("crypto-js");
 
 const GOOGLE_CLIENT_ID = "231323238286-rd0m76u7b07gok8jfhf10uueq65fjmgs.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";

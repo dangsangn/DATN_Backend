@@ -70,7 +70,7 @@ app.use("/api/upload-images", upload.array("image"), async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT,function () {
   console.log("Server running at ", PORT);
