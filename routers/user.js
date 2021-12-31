@@ -1,8 +1,20 @@
 const router = require("express").Router();
 const CryptoJS = require("crypto-js");
-const { verifyTokenAndAuthorization } = require("../middleware/auth");
+const { verifyTokenAndAuthorization, verifyToken } = require("../middleware/auth");
 const User = require("../models/User");
 
+//get profile user
+router.get("/profile", verifyToken, async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.idUser });
+    if (!user) {
+      return res.status(401).json("not found user");
+    }
+    res.status(202).json(user);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 //get a user
 router.get("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
   try {
