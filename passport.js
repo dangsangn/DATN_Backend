@@ -4,8 +4,8 @@ const passport = require("passport");
 const User = require("./models/User");
 const CryptoJS = require("crypto-js");
 
-const GOOGLE_CLIENT_ID = "231323238286-rd0m76u7b07gok8jfhf10uueq65fjmgs.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
+const GOOGLE_CLIENT_ID = "242801633846-50fdse8v25itk5l8euopglu77pl5tsob.apps.googleusercontent.com";
+const GOOGLE_CLIENT_SECRET = "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";
 
 FACEBOOK_APP_ID = "your id";
 FACEBOOK_APP_SECRET = "your id";
