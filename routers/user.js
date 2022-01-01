@@ -10,7 +10,8 @@ router.get("/profile", verifyToken, async (req, res) => {
     if (!user) {
       return res.status(401).json("not found user");
     }
-    res.status(202).json(user);
+    const {...info, password} = user._doc;
+    res.status(202).json(info);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -22,7 +23,8 @@ router.get("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
     if (!user) {
       return res.status(401).json("not found user");
     }
-    res.status(202).json(user);
+    const {...info, password} = user._doc;
+    res.status(202).json(info);
   } catch (error) {
     res.status(500).json(error);
   }
