@@ -15,7 +15,7 @@ passport.use(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "/api/auth/google/callback",
+      callbackURL: "https://doan-totnghiep-2603.herokuapp.com/api/auth/google/callback",
     },
     function (accessToken, refreshToken, profile, done) {
       done(null, profile);
