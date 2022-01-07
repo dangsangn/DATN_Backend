@@ -32,7 +32,7 @@ passport.use(
               photo: profile.photos.value,
             })
               .save()
-              .then((user) => done(null, user));
+              .then((user) => done(null, { user, accessToken }));
           }
         });
       }
@@ -53,10 +53,10 @@ passport.use(
   )
 );
 
-passport.serializeUser((user, done) => {
-  done(null, user);
+passport.serializeUser((data, done) => {
+  done(null, data);
 });
 
-passport.deserializeUser((user, done) => {
-  done(null, user);
+passport.deserializeUser((data, done) => {
+  done(null, data);
 });

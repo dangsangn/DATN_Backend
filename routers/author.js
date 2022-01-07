@@ -63,11 +63,13 @@ router.post("/login", async (req, res) => {
 
 //login by google and facebook
 router.get("/login/success", (req, res) => {
+  console.log(req);
   if (req.user) {
     res.status(200).json({
       success: true,
       message: "successfull",
-      user: req.user,
+      user: req.user.user,
+      accessToken: req.accessToken,
       //   cookies: req.cookies
     });
   } else {
