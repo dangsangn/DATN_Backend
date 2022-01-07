@@ -18,7 +18,24 @@ passport.use(
       callbackURL: "https://doan-totnghiep-2603.herokuapp.com/api/auth/google/callback",
     },
     function (accessToken, refreshToken, profile, done) {
-      done(null, profile);
+      // Check if google profile exist.
+      if (profile.id) {
+        User.findOne({ googleId: profile.id }).then((existingUser) => {
+          if (existingUser) {
+            done(null, existingUser);
+          } else {
+            new User({
+              googleId: profile.id,
+              email: profile.emails[0].value,
+              username: profile.emails[0].value,
+              fullName: profile.name.familyName + " " + profile.name.givenName,
+              photo: profile.photos.value,
+            })
+              .save()
+              .then((user) => done(null, user));
+          }
+        });
+      }
     }
   )
 );
@@ -40,21 +57,6 @@ passport.serializeUser((user, done) => {
   done(null, user);
 });
 
-passport.deserializeUser(async (user, done) => {
-  const usernameExised = await User.findOne({
-    username: user.emails[0].value,
-  });
-  if (!usernameExised) {
-    const passwordCode = CryptoJS.AES.encrypt(user.id, process.env.PASS_SECRET).toString();
-    const newUser = new User({
-      username: user.emails[0].value,
-      fullName: user.displayName,
-      password: passwordCode,
-      photo: user.photos.value,
-      email: user.emails[0].value,
-    });
-    await newUser.save();
-  }
-
+passport.deserializeUser((user, done) => {
   done(null, user);
 });

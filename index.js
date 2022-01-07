@@ -29,7 +29,7 @@ app.use(cors(corsConfig));
 app.use(express.json());
 
 //login width google and facabook
-app.use(cookieSession({ name: "session", keys: ["dangsang"], maxAge: 24 * 60 * 60 * 100 }));
+app.use(cookieSession({ name: "session", keys: ["dangsang"], maxAge: 24 * 60 * 60 * 1000 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
