@@ -1,7 +1,6 @@
 const express = require("express"),
   http = require("http"),
-  app = express(),
-  server = http.createServer(app);
+  app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -9,14 +8,16 @@ const cookieSession = require("cookie-session");
 const passport = require("passport");
 const fs = require("fs");
 
-const passportSetup = require("./passport");
 const authRouter = require("./routers/author");
 const userRouter = require("./routers/user");
 const roomRouter = require("./routers/room");
+const roomFavoriteRouter = require("./routers/roomFavorite");
 const provinceRouter = require("./routers/province");
+const conversationRouter = require("./routers/conversation");
+const messageRouter = require("./routers/message");
 const upload = require("./multer");
 const cloudinary = require("./cloudinary");
-
+const io = require("./socket-io/index");
 dotenv.config();
 app.use("/uploads", express.static("uploads"));
 const corsConfig = {
@@ -44,7 +45,10 @@ mongoose
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/room", roomRouter);
+app.use("/api/room-favorite", roomFavoriteRouter);
 app.use("/api/provinces", provinceRouter);
+app.use("/api/conversation", conversationRouter);
+app.use("/api/message", messageRouter);
 
 app.use("/api/upload-images", upload.array("image"), async (req, res) => {
   const uploader = async (path) => await cloudinary.uploads(path, "Images");
@@ -67,7 +71,11 @@ app.use("/api/upload-images", upload.array("image"), async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT,function () {
+const server = app.listen(PORT, function () {
   console.log("Server running at ", PORT);
 });
+
+console.log("Server listening", server);
+
+module.exports = server;
 

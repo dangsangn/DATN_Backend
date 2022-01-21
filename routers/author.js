@@ -40,7 +40,7 @@ router.post("/login", async (req, res) => {
   if (!usernameExised) {
     res.status(400).json("username is not correct");
   }
-  const hashedPassword = CryptoJS.AES.decrypt(usernameExised.password, process.env.PASS_SECRET);
+  const hashedPassword = CryptoJS.AES.decrypt(usernameExised?.password, process.env.PASS_SECRET);
   const OriginalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
   if (OriginalPassword !== req.body.password) {
     res.status(400).json("password is not correct");
@@ -63,14 +63,20 @@ router.post("/login", async (req, res) => {
 
 //login by google and facebook
 router.get("/login/success", (req, res) => {
-  console.log(req);
-  if (req.user) {
+  if (req?.user) {
+    const accessToken = jwt.sign(
+      {
+        idUser: req?.user?._id,
+        isAdmin: req?.user?.isAdmin,
+      },
+      process.env.ACCESS_TOKEN,
+      { expiresIn: "3d" }
+    );
     res.status(200).json({
       success: true,
       message: "successfull",
-      user: req.user.user,
-      accessToken: req.accessToken,
-      //   cookies: req.cookies
+      user: req.user,
+      accessToken,
     });
   } else {
     res.status(400).json({

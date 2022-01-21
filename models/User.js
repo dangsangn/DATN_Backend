@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema(
     photo: { type: String },
     email: { type: String },
     fullName: { type: String },
-    googleId: { type: String },
+    socialId: { type: String },
   },
   { timestamps: true }
 );

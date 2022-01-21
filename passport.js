@@ -7,32 +7,32 @@ const CryptoJS = require("crypto-js");
 const GOOGLE_CLIENT_ID = "242801633846-50fdse8v25itk5l8euopglu77pl5tsob.apps.googleusercontent.com";
 const GOOGLE_CLIENT_SECRET = "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";
 
-FACEBOOK_APP_ID = "your id";
-FACEBOOK_APP_SECRET = "your id";
+FACEBOOK_APP_ID = "903114433733455";
+FACEBOOK_APP_SECRET = "2f2af7c18f3225f102c7e2ffebf432c7";
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://doan-totnghiep-2603.herokuapp.com/api/auth/google/callback",
+      callbackURL: "http://localhost:5000/api/auth/google/callback",
     },
     function (accessToken, refreshToken, profile, done) {
       // Check if google profile exist.
       if (profile.id) {
-        User.findOne({ googleId: profile.id }).then((existingUser) => {
+        User.findOne({ socialId: profile.id }).then((existingUser) => {
           if (existingUser) {
             done(null, existingUser);
           } else {
             new User({
-              googleId: profile.id,
+              socialId: profile.id,
               email: profile.emails[0].value,
               username: profile.emails[0].value,
               fullName: profile.name.familyName + " " + profile.name.givenName,
               photo: profile.photos.value,
             })
               .save()
-              .then((user) => done(null, { user, accessToken }));
+              .then((user) => done(null, user));
           }
         });
       }

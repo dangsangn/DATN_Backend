@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const Conversation = require("../modols/Conversation");
-import { verifyToken } from "../middleware/auth";
+const Conversation = require("../models/Conversation");
+const { verifyToken, verifyTokenAndAuthorization } = require("../middleware/auth");
 
 //create a conversation
-router.post("/", verify, async (req, res) => {
+router.post("/", verifyToken, async (req, res) => {
   const conversation = new Conversation({ members: [req.idUser, req.body.idReceiver] });
   try {
     const newConversation = await conversation.save();
@@ -24,3 +24,6 @@ router.get("/:idConversation", verifyToken, async (req, res) => {
     res.status(500).json({ error: error });
   }
 });
+
+module.exports = router;
+
