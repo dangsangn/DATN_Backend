@@ -52,7 +52,7 @@ router.patch("/update-password/:id", verifyTokenAndAuthorization, async (req, re
 });
 //update user
 router.patch("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
-  console.log("req.body", req.body);
+  // console.log("req.body", req.body);
   try {
     if (req.body.password) {
       req.body.password = CryptoJS.AES.encrypt(

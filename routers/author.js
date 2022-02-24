@@ -4,19 +4,19 @@ const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
-const CLIENT_URL = "http://localhost:3000";
+const CLIENT_URL = "http://localhost:2040";
 //register user
 router.post("/register", async (req, res) => {
   const { username, password, passwordConfirm } = req.body;
   if (!username || !password || !passwordConfirm) {
-    res.status(400).json("field is not emptied");
+    return res.status(202).json("field is not emptied");
   }
   if (password !== passwordConfirm) {
-    res.status(400).json("password confirm is not correct");
+    return res.status(202).json("password confirm is not correct");
   }
   const usernameExised = await User.findOne({ username });
   if (usernameExised) {
-    res.status(400).json("username is really exist");
+    return res.status(202).json("username is really exist");
   }
   //all done
   try {
@@ -28,6 +28,7 @@ router.post("/register", async (req, res) => {
     await user.save();
     res.status(201).json("register success");
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 });
