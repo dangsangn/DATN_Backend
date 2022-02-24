@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const RoomSchema = new mongoose.Schema(
   {
-    idUser: {
+    owner: {
       type: Schema.Types.ObjectId,
       ref: "users",
     },
@@ -22,12 +22,23 @@ const RoomSchema = new mongoose.Schema(
     quantityRoom: { type: Number },
     ordered: { type: Number },
     description: { type: String },
-    verify: { type: Boolean },
-    ward: { type: Object },
-    district: { type: Object },
-    city: { type: Object },
+    verify: { type: Boolean, default: false },
+    ward: {
+      label: String,
+      code: String,
+    },
+    district: {
+      label: String,
+      code: String,
+    },
+    city: {
+      label: String,
+      code: String,
+    },
+    userOrder: { type: Array, default: [] },
+    confirmUser: { type: Array, default: [] },
   },
   { timestamps: true }
 );
-
+RoomSchema.index({ "ward.label": "text", "district.label": "text", "city.label": "text" });
 module.exports = mongoose.model("rooms", RoomSchema);

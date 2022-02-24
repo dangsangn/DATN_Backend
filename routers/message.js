@@ -4,10 +4,10 @@ const Conversation = require("../models/Conversation");
 const Message = require("../models/Message");
 
 //add a messs
-router.post("/", verifyToken, async (req, res) => {
+router.post("/:conversationId", verifyToken, async (req, res) => {
   const message = new Message({
-    conversationId: req.body.conversationId,
-    sender: req.userId,
+    conversationId: req.params.conversationId,
+    sender: req.idUser,
     content: req.body.content,
   });
   try {
@@ -21,11 +21,22 @@ router.post("/", verifyToken, async (req, res) => {
 //get message of a conversation
 router.get("/:conversationId", verifyToken, async (req, res) => {
   try {
-    const messages = await Message.find({
+    const length = await Message.find({
       conversationId: req.params.conversationId,
-    });
+    }).count();
+    let messages;
+    if (length > 30) {
+      messages = await Message.find({
+        conversationId: req.params.conversationId,
+      }).skip(length - 20);
+    } else {
+      messages = await Message.find({
+        conversationId: req.params.conversationId,
+      });
+    }
     res.json({ success: true, messages });
   } catch (error) {
+    console.log(error);
     res.status(500).json(error);
   }
 });

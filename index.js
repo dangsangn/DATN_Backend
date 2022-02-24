@@ -15,14 +15,14 @@ const roomFavoriteRouter = require("./routers/roomFavorite");
 const provinceRouter = require("./routers/province");
 const conversationRouter = require("./routers/conversation");
 const messageRouter = require("./routers/message");
+const orderRouter = require("./routers/order");
 const upload = require("./multer");
 const cloudinary = require("./cloudinary");
-const io = require("./socket-io/index");
 dotenv.config();
 app.use("/uploads", express.static("uploads"));
 const corsConfig = {
   origin: "http://localhost:3000",
-  methods: "GET,POST,PUT,DELETE",
+  methods: "GET,POST,PUT,DELETE,PATCH",
   credentials: true,
   // origin: true,
 };
@@ -49,6 +49,7 @@ app.use("/api/room-favorite", roomFavoriteRouter);
 app.use("/api/provinces", provinceRouter);
 app.use("/api/conversation", conversationRouter);
 app.use("/api/message", messageRouter);
+app.use("/api/order", orderRouter);
 
 app.use("/api/upload-images", upload.array("image"), async (req, res) => {
   const uploader = async (path) => await cloudinary.uploads(path, "Images");
@@ -71,11 +72,6 @@ app.use("/api/upload-images", upload.array("image"), async (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
-const server = app.listen(PORT, function () {
+app.listen(PORT, function () {
   console.log("Server running at ", PORT);
 });
-
-console.log("Server listening", server);
-
-module.exports = server;
-

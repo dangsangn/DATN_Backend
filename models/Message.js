@@ -9,9 +9,11 @@ const MessageSchema = new Schema(
     },
     sender: {
       type: String,
+      required: true,
     },
     content: {
       type: String,
+      required: true,
     },
   },
   { timestamps: true }

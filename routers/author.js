@@ -24,7 +24,6 @@ router.post("/register", async (req, res) => {
     const user = new User({
       username: username,
       password: passwordCode,
-      email: "" + Math.random() + Math.random(),
     });
     await user.save();
     res.status(201).json("register success");

@@ -17,7 +17,7 @@ router.get("/profile", verifyToken, async (req, res) => {
   }
 });
 //get a user
-router.get("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
+router.get("/:idUser", verifyToken, async (req, res) => {
   try {
     const user = await User.findOne({ _id: req.params.idUser });
     if (!user) {
@@ -30,8 +30,29 @@ router.get("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
   }
 });
 
+//update password
+router.patch("/update-password/:id", verifyTokenAndAuthorization, async (req, res) => {
+  try {
+    const { passwordConfirm } = req.body;
+    const passwordRequest = req.body.password;
+    if (passwordRequest !== passwordConfirm) {
+      res.status(300).json({ message: "password don't match" });
+    }
+    const passwordCode = CryptoJS.AES.encrypt(passwordRequest, process.env.PASS_SECRET).toString();
+    const user = await User.findByIdAndUpdate(
+      { _id: req.params.id },
+      { $set: { password: passwordCode } },
+      { new: true }
+    );
+    const { password, ...info } = user._doc;
+    res.status(200).json({ message: "success", user: info });
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
 //update user
 router.patch("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
+  console.log("req.body", req.body);
   try {
     if (req.body.password) {
       req.body.password = CryptoJS.AES.encrypt(
@@ -39,12 +60,13 @@ router.patch("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
         process.env.PASS_SECRET
       ).toString();
     }
-    const newUser = await User.findByIdAndUpdate(
+    const updateUser = await User.findByIdAndUpdate(
       { _id: req.params.idUser },
       { $set: req.body },
       { new: true }
     );
-    res.status(202).json(newUser);
+    const { password, ...info } = updateUser._doc;
+    res.status(202).json(info);
   } catch (error) {
     res.status(500).json(error);
   }
@@ -65,19 +87,21 @@ router.delete("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
 
 //get all user or pagination
 router.get("/", verifyTokenAndAuthorization, async (req, res) => {
-  let { _limit, _page } = req.query;
-  const queryNew = req.query.new;
-  _page = _page < 1 ? 1 : _page;
-  _limit = _limit ? _limit : 10;
-  const totalRow = await User.count();
+  let _page = req.query?._page;
+  let _limit = req.query?._limit;
+  let _q = req.query?.q || "";
+  const queryNew = req.query?.new;
   if (_page) {
+    _page = _page < 1 ? 1 : _page;
+    _limit = _limit ? _limit : 10;
+    const totalRow = await User.count();
     try {
       let users = queryNew
-        ? await User.find()
+        ? await User.find({ isAdmin: false, username: { $regex: ".*" + _q + ".*" } })
             .sort({ _id: -1 })
             .skip((_page - 1) * _limit)
             .limit(+_limit)
-        : await User.find()
+        : await User.find({ isAdmin: false, username: { $regex: ".*" + _q + ".*" } })
             .skip((_page - 1) * _limit)
             .limit(+_limit);
 
@@ -90,7 +114,7 @@ router.get("/", verifyTokenAndAuthorization, async (req, res) => {
     }
   } else {
     try {
-      const users = User.find();
+      const users = await User.find({ isAdmin: false, username: { $regex: ".*" + _q + ".*" } });
       res.status(202).json({
         users,
       });
