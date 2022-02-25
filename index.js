@@ -19,13 +19,13 @@ const upload = require("./multer");
 const cloudinary = require("./cloudinary");
 dotenv.config();
 app.use("/uploads", express.static("uploads"));
-const corsConfig = {
-  origin: "https://myhome-2603.vercel.app/",
-  methods: "GET,POST,PUT,DELETE,PATCH",
-  credentials: true,
-  // origin: true,
-};
-app.use(cors(corsConfig));
+// const corsConfig = {
+//   origin: "http://localhost:3000",
+//   methods: "GET,POST,PUT,DELETE,PATCH",
+//   credentials: true,
+//   // origin: true,
+// };
+app.use(cors());
 app.use(express.json());
 
 //connect db

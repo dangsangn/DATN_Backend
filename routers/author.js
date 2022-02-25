@@ -54,12 +54,12 @@ router.post("/login", async (req, res) => {
   const { username } = req.body;
   const usernameExised = await User.findOne({ username });
   if (!usernameExised) {
-    res.status(400).json("username is not correct");
+    return res.status(400).json("username is not correct");
   }
   const hashedPassword = CryptoJS.AES.decrypt(usernameExised?.password, process.env.PASS_SECRET);
   const OriginalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
   if (OriginalPassword !== req.body.password) {
-    res.status(400).json("password is not correct");
+    return res.status(400).json("password is not correct");
   }
   const accessToken = jwt.sign(
     {
