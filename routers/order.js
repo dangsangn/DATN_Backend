@@ -76,7 +76,14 @@ router.get("/:id", verifyToken, async (req, res) => {
 //get list order of user
 router.get("/", verifyToken, async (req, res) => {
   try {
-    const orders = await Order.find({ user: req.idUser });
+    const orders = await Order.find({ user: req.idUser }).populate("room", {
+      images: 1,
+      nameStress: 1,
+      numberHome: 1,
+      ward: 1,
+      district: 1,
+      city: 1,
+    });
     res.json(orders);
   } catch (error) {
     console.log(error);

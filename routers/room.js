@@ -125,6 +125,7 @@ router.delete("/:idRoom", verifyToken, async (req, res) => {
 
 //get all room or pagination
 router.get("/", async (req, res) => {
+  // console.log("req.query", req.query);
   let verify = req.query?.verify || false;
   let page = req.query?._page;
   let limit = req.query?._limit;

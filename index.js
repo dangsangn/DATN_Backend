@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const cookieSession = require("cookie-session");
-const passport = require("passport");
 const fs = require("fs");
 
 const authRouter = require("./routers/author");
@@ -21,19 +20,13 @@ const cloudinary = require("./cloudinary");
 dotenv.config();
 app.use("/uploads", express.static("uploads"));
 const corsConfig = {
-  origin: "http://localhost:3000",
+  origin: "https://myhome-2603.vercel.app/",
   methods: "GET,POST,PUT,DELETE,PATCH",
   credentials: true,
   // origin: true,
 };
 app.use(cors(corsConfig));
 app.use(express.json());
-
-//login width google and facabook
-app.use(cookieSession({ name: "session", keys: ["dangsang"], maxAge: 24 * 60 * 60 * 1000 }));
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 //connect db
 mongoose
