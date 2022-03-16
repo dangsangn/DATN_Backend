@@ -4,7 +4,6 @@ const express = require("express"),
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const cookieSession = require("cookie-session");
 const fs = require("fs");
 
 const authRouter = require("./routers/author");
@@ -15,6 +14,7 @@ const provinceRouter = require("./routers/province");
 const conversationRouter = require("./routers/conversation");
 const messageRouter = require("./routers/message");
 const orderRouter = require("./routers/order");
+const notificationRouter = require("./routers/notification");
 const upload = require("./multer");
 const cloudinary = require("./cloudinary");
 dotenv.config();
@@ -43,6 +43,7 @@ app.use("/api/provinces", provinceRouter);
 app.use("/api/conversation", conversationRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/order", orderRouter);
+app.use("/api/notification", notificationRouter);
 
 app.use("/api/upload-images", upload.array("image"), async (req, res) => {
   const uploader = async (path) => await cloudinary.uploads(path, "Images");

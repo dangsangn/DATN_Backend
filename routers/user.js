@@ -2,7 +2,7 @@ const router = require("express").Router();
 const CryptoJS = require("crypto-js");
 const { verifyTokenAndAuthorization, verifyToken } = require("../middleware/auth");
 const User = require("../models/User");
-
+const Room = require("../models/Room");
 //get profile user
 router.get("/profile", verifyToken, async (req, res) => {
   try {
@@ -16,6 +16,32 @@ router.get("/profile", verifyToken, async (req, res) => {
     res.status(500).json(error);
   }
 });
+
+//GET User STATISTIC
+router.get("/statistic-month", async (req, res) => {
+  const today = new Date();
+  const latYear = today.setFullYear(today.setFullYear() - 1);
+
+  try {
+    const data = await User.aggregate([
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+        },
+      },
+      {
+        $group: {
+          _id: "$month",
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 //get a user
 router.get("/:idUser", verifyToken, async (req, res) => {
   try {
@@ -79,8 +105,10 @@ router.delete("/:idUser", verifyTokenAndAuthorization, async (req, res) => {
     if (!user) {
       return res.status(401).json("not found user");
     }
+    await Room.deleteMany({ owner: req.params.idUser });
     res.status(202).json("delete success");
   } catch (error) {
+    console.log("error", error);
     res.status(500).json(error);
   }
 });

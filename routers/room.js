@@ -27,6 +27,100 @@ router.get("/user-room", verifyToken, async (req, res) => {
   }
 });
 
+//GET ROOM STATISTIC
+router.get("/statistic-month", async (req, res) => {
+  const today = new Date();
+  const latYear = today.setFullYear(today.setFullYear() - 1);
+
+  try {
+    const data = await Room.aggregate([
+      {
+        $project: {
+          month: { $month: "$createdAt" },
+        },
+      },
+      {
+        $group: {
+          _id: "$month",
+          total: { $sum: 1 },
+        },
+      },
+    ]);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//GET ROOM STATISTIC BY DISTRICT
+router.get("/statistic-district", async (req, res) => {
+  const today = new Date();
+  const latYear = today.setFullYear(today.setFullYear() - 1);
+
+  try {
+    const data = await Room.aggregate([
+      { $match: { "city.label": "Thành phố Đà Nẵng" } },
+      { $project: { district: 1 } },
+      {
+        $group: {
+          _id: "$district.label",
+          total: { $sum: 1 },
+        },
+      },
+      { $sort: { total: -1 } },
+      { $limit: 4 },
+    ]);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/statistic-district", async (req, res) => {
+  const today = new Date();
+  const latYear = today.setFullYear(today.setFullYear() - 1);
+
+  try {
+    const data = await Room.aggregate([
+      { $match: { "city.label": "Thành phố Đà Nẵng" } },
+      { $project: { district: 1 } },
+      {
+        $group: {
+          _id: "$district.label",
+          total: { $sum: 1 },
+        },
+      },
+      { $sort: { total: -1 } },
+      { $limit: 4 },
+    ]);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+router.get("/statistic-district-all", async (req, res) => {
+  const today = new Date();
+  const latYear = today.setFullYear(today.setFullYear() - 1);
+
+  try {
+    const data = await Room.aggregate([
+      { $match: { "city.label": "Thành phố Đà Nẵng" } },
+      { $project: { district: 1 } },
+      {
+        $group: {
+          _id: "$district.label",
+          total: { $sum: 1 },
+        },
+      },
+      { $sort: { total: -1 } },
+    ]);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 //get a room
 router.get("/:idRoom", async (req, res) => {
   try {
@@ -132,7 +226,7 @@ router.get("/", async (req, res) => {
   let _q = req.query?.q || "";
 
   let price_lte = req.query?.price ? req.query?.price[0] * 1000000 : 0;
-  let price_gte = req.query?.price ? req.query?.price[1] * 15000000 : 15000000;
+  let price_gte = req.query?.price ? req.query?.price[1] * 1000000 : 15000000;
   let typeRoom =
     (req.query?.typeRoom && typeof req.query?.typeRoom === "string"
       ? [req.query?.typeRoom]
