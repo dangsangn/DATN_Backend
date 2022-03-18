@@ -75,4 +75,17 @@ router.patch("/:id", verifyToken, async (req, res) => {
   }
 });
 
+//delete a notification
+router.delete("/:id", verifyToken, async (req, res) => {
+  try {
+    const notifications = await Notification.findByIdAndDelete(
+      { _id: req.params.id },
+    );
+    res.status(200).json(notifications);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: error });
+  }
+});
+
 module.exports = router;
